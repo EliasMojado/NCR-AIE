@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QGraphicsDropSha
 from PyQt5.QtGui import QColor, QPalette, QFont, QImage, QPixmap
 from PyQt5.QtCore import Qt, QRect, QTimer
 import sys
+from skimming import addSkimmingDetails
 
 import cv2
 import numpy as np
@@ -169,6 +170,7 @@ class MainWindow(QMainWindow):
         # Add Box widgets to the main window
         self.box = ARbox(50, 50, 700, 800, "Action Recognition",self)
         self.box = Box(800, 50, 900, 500, "Skimming Device Recognition",self)
+        addSkimmingDetails(self, self.box_skimming_device)
         
 if __name__ == "__main__":
     app = QApplication(sys.argv)

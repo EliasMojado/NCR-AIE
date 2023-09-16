@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QGraphicsDropShadowEffect, QLabel
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QGraphicsDropShadowEffect, QLabel, QPushButton
 from PyQt5.QtGui import QColor, QPalette, QFont, QImage, QPixmap
 from PyQt5.QtCore import Qt, QRect, QTimer
 import sys
@@ -79,7 +79,7 @@ class ARbox(Box):
         self.models = []
         self.actions = ["navigate", "inserting", "type"]
         for action in self.actions:
-            model = load_model(f"{action}_model.h5")
+            model = load_model(f"actionrecog/{action}_model.h5")
             self.models.append(model)
         
         # Set default active model
@@ -100,12 +100,35 @@ class ARbox(Box):
         
         # Create QLabel for video display
         self.video_label = QLabel(self)
-        self.video_label.setGeometry(0, 0, width // 2, height)  # Take up 50% of the entire box
+        self.video_label.setGeometry(25, 75, width, (height*2)//3)  # Take up 50% of the entire box
         
         # Create QLabel for text display
         self.text_label = QLabel(self)
-        self.text_label.setGeometry(width // 2, 0, width // 2, height)
+        self.text_label.setGeometry(25, 600, width, height//3)
         self.text_label.setAlignment(Qt.AlignTop)
+
+        # Set font to Arial and size to, say, 14
+        font = QFont("Arial", 10)
+        self.text_label.setFont(font)
+
+        # Set text color to white
+        text_palette = QPalette()
+        text_palette.setColor(QPalette.WindowText, QColor("white"))
+        self.text_label.setPalette(text_palette)
+
+        # Inside the __init__ method of ARbox class
+        self.navigate_button = QPushButton('Navigate', self)
+        self.navigate_button.setGeometry(25, 725, 100, 50)
+        self.navigate_button.clicked.connect(lambda: self.set_active_model(model_name='navigate'))
+
+        self.inserting_button = QPushButton('Inserting', self)
+        self.inserting_button.setGeometry(150, 725, 100, 50)
+        self.inserting_button.clicked.connect(lambda: self.set_active_model(model_name='inserting'))
+
+        self.type_button = QPushButton('Type', self)
+        self.type_button.setGeometry(275, 725, 100, 50)
+        self.type_button.clicked.connect(lambda: self.set_active_model(model_name='type'))
+
         
     def update_frame(self):
         ret, frame = self.cap.read()
@@ -147,6 +170,14 @@ class ARbox(Box):
             bytes_per_line = ch * w
             qt_image = QImage(rgb_image.data, w, h, bytes_per_line, QImage.Format_RGB888)
             self.video_label.setPixmap(QPixmap.fromImage(qt_image))
+    
+    def set_active_model(self, model_index=None, model_name=None):
+        if model_index is not None:
+            self.active_model_index = model_index
+        elif model_name is not None:
+            self.active_model_index = self.actions.index(model_name)
+        else:
+            print("Either model index or model name must be provided.")
 
 #---------------------------------------AKO NI DIRI ---------------------------------------------------------------------------------------------#
 
@@ -170,7 +201,7 @@ class MainWindow(QMainWindow):
         # Add Box widgets to the main window
         self.box = ARbox(50, 50, 700, 800, "Action Recognition",self)
         self.box = Box(800, 50, 900, 500, "Skimming Device Recognition",self)
-        addSkimmingDetails(self, self.box_skimming_device)
+        # addSkimmingDetails(self, self.box_skimming_device)
         
 if __name__ == "__main__":
     app = QApplication(sys.argv)

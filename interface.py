@@ -41,7 +41,7 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
 
         # Set window title
-        self.setWindowTitle("NCR AI ensemble")
+        self.setWindowTitle("NCR AI Ensemble")
         
         # Set window size
         self.setGeometry(100, 100, 800, 600)

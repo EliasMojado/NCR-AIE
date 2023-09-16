@@ -6,7 +6,6 @@ import sys
 import cv2
 import numpy as np
 from tensorflow.keras.models import load_model
-from interface import Box
 import mediapipe as mp
 
 # Parent class 'Box'
@@ -73,7 +72,7 @@ class ARbox(Box):
         super(ARbox, self).__init__(x, y, width, height, title, parent)
         
         # Initialize video capture
-        self.cap = cv2.VideoCapture(1)
+        self.cap = cv2.VideoCapture(0)
         
         # Load the trained models
         self.models = []
@@ -168,7 +167,7 @@ class MainWindow(QMainWindow):
         self.setAutoFillBackground(True)
 
         # Add Box widgets to the main window
-        self.box = Box(50, 50, 700, 800, "Action Recognition",self)
+        self.box = ARbox(50, 50, 700, 800, "Action Recognition",self)
         self.box = Box(800, 50, 900, 500, "Skimming Device Recognition",self)
         
 if __name__ == "__main__":

@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QGraphicsDropSha
 from PyQt5.QtGui import QColor, QPalette, QFont
 from PyQt5.QtCore import Qt, QRect
 import sys
+from skimming import addSkimmingDetails
 
 # Parent class 'Box'
 class Box(QWidget):
@@ -53,8 +54,10 @@ class MainWindow(QMainWindow):
         self.setAutoFillBackground(True)
 
         # Add Box widgets to the main window
-        self.box = Box(50, 50, 700, 800, "Action Recognition",self)
-        self.box = Box(800, 50, 900, 500, "Skimming Device Recognition",self)
+        self.box_action_recognition = Box(50, 50, 700, 800, "Action Recognition", self)
+        self.box_skimming_device = Box(800, 50, 900, 500, "Skimming Device Recognition", self)
+        addSkimmingDetails(self, self.box_skimming_device)
+
         
 if __name__ == "__main__":
     app = QApplication(sys.argv)

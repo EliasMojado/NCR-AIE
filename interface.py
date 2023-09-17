@@ -200,9 +200,8 @@ class MainWindow(QMainWindow):
 
         # Add Box widgets to the main window
         self.box = ARbox(50, 50, 700, 800, "Action Recognition",self)
-        self.box = Box(800, 50, 900, 500, "Skimming Device Recognition",self)
-        # addSkimmingDetails(self, self.box_skimming_device)
-        
+        self.box_skimming_device = Box(800, 50, 1065, 650, "Skimming Device Recognition", self)
+        addSkimmingDetails(self, self.box_skimming_device)
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MainWindow()

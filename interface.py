@@ -74,12 +74,14 @@ class ARbox(Box):
         
         # Initialize video capture
         self.cap = cv2.VideoCapture(0)
+
+        self.is_running = False
         
         # Load the trained models
         self.models = []
         self.actions = ["navigate", "inserting", "type"]
         for action in self.actions:
-            model = load_model(f"actionrecog/{action}_model.h5")
+            model = load_model(f"actionrecog/{action}_model_v2.h5")
             self.models.append(model)
         
         # Set default active model
@@ -108,7 +110,7 @@ class ARbox(Box):
         self.text_label.setAlignment(Qt.AlignTop)
 
         # Set font to Arial and size to, say, 14
-        font = QFont("Arial", 10)
+        font = QFont("Arial", 15)
         self.text_label.setFont(font)
 
         # Set text color to white
@@ -129,6 +131,21 @@ class ARbox(Box):
         self.type_button.setGeometry(275, 725, 100, 50)
         self.type_button.clicked.connect(lambda: self.set_active_model(model_name='type'))
 
+        self.run_button = QPushButton('Run', self)
+        self.run_button.setGeometry(500, 725, 100, 50)
+        self.run_button.clicked.connect(self.toggle_run_stop)
+
+    def toggle_run_stop(self):
+        if self.is_running:
+            # Stop the component
+            self.is_running = False
+            self.run_button.setText("Run")
+            self.timer.stop()  # Stopping the QTimer to stop updating the frame
+        else:
+            # Start the component
+            self.is_running = True
+            self.run_button.setText("Stop")
+            self.timer.start(30)  # Starting the QTimer to resume updating the frame
         
     def update_frame(self):
         ret, frame = self.cap.read()
@@ -178,6 +195,15 @@ class ARbox(Box):
             self.active_model_index = self.actions.index(model_name)
         else:
             print("Either model index or model name must be provided.")
+
+        # self.sequence = []
+          # Reset the sequence to zeros
+        if len(self.sequence) > 0:
+            # Get the shape of a single frame in the sequence
+            single_frame_shape = self.sequence[0].shape
+            
+            # Reset the sequence with zeros
+            self.sequence = [np.zeros(single_frame_shape) for _ in range(self.max_length)]
 
 #---------------------------------------AKO NI DIRI ---------------------------------------------------------------------------------------------#
 
